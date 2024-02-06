@@ -77,7 +77,7 @@ static void Send(DbHandler dbHandler, XmlHandler xmlLoader)
             SqlTransaction transaction;
             transaction = sqlConnection.BeginTransaction();
 
-            if (dbHandler.AddItem<Order>(order, sqlConnection, transaction) == DbResult.NOT_SAVED)
+            if (dbHandler.AddItem<Order>(order, sqlConnection, transaction) != DbResult.SUCCESS)
             {
                 orderProdData = orderProdData.Where(x => x.OrderNo != order.No).ToList();
                 transaction.Rollback();
