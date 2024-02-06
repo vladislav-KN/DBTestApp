@@ -27,16 +27,6 @@
 		<no>122</no>
 		<reg_date>2018.01.09</reg_date>
 		<sum>126065.05</sum>
-		<product>
-			<quantity>3</quantity>
-			<name>Xiomi 12X</name>
-			<price>42000.75</price>
-		</product>
-		<product>
-			<quantity>20</quantity>
-			<name>Noname 222</name>
-			<price>3.14</price>
-		</product>
 		<user>
 			<fio>Петров Виктор Семенович</fio>
 			<email>xyz@email.com</email>

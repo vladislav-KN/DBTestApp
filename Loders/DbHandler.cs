@@ -239,6 +239,44 @@ CREATE TABLE [OrderProduct] (
 
             return parameters;
         }
+        public DbResult AddItem<T>(T item, SqlConnection connection, SqlTransaction? transaction = null)
+        {
+            try
+            {
+                Dictionary<string, object> columnValues = GetObjectParameters(item);
+                string insertQuery = $"INSERT INTO [dbo].[{typeof(T).Name}] ({string.Join(", ", columnValues.Keys)}) VALUES ({string.Join(", ", columnValues.Keys.Select(key => "@" + key))})";
+                SqlCommand command = connection.CreateCommand();
+                command.Connection = connection;
+
+                if (transaction != null) command.Transaction = transaction;
+
+                command.CommandText = insertQuery;
+
+                foreach (var keyValuePair in columnValues)
+                {
+                    command.Parameters.AddWithValue("@" + keyValuePair.Key, keyValuePair.Value);
+                }
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine($"{DateTime.Now}: Запись добавлена в базу данных: {string.Join(", ", columnValues.Values.Select(value => value.ToString()))}");
+                    return DbResult.SUCCESS;
+                }
+                else
+                {
+                    Console.WriteLine($"{DateTime.Now}: Ошибка при добавлении записи в базу данных: {string.Join(", ", columnValues.Values.Select(value => value.ToString()))}");
+                    return DbResult.NOT_SAVED;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return DbResult.NOT_PREDICTED_ERROR;
+            }
+
+        }
     }
 }
 
@@ -246,5 +284,6 @@ public enum DbResult
 {
     INCORRECT_DATA,
     SUCCESS,
-    NOT_PREDICTED_ERROR
+    NOT_PREDICTED_ERROR,
+    NOT_SAVED
 }
